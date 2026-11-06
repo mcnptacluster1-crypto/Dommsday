@@ -1,0 +1,92 @@
+
+<div style="width:100%;overflow-x:auto;background:#242424;padding:16px 8px;box-sizing:border-box;border-radius:8px;">
+  <div id="sl-cinema-chart" style="min-width:530px;color:white;font-family:Arial,sans-serif;">
+    <div style="background:#535865;text-align:center;padding:9px;margin:0 20px 14px;clip-path:polygon(0 0,100% 0,97% 100%,3% 100%);font-size:13px;">
+      SL Cinema 2 — SCREEN
+    </div>
+    <div id="sl-cinema-rows"></div>
+    <div style="display:flex;gap:16px;justify-content:center;margin-top:18px;font-size:12px;">
+      <span><span style="color:#db7139;">■</span> Available</span>
+      <span><span style="color:#444852;">■</span> Gray seats</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const root = document.getElementById("sl-cinema-rows");
+  if (!root) return;
+
+  const rows = "ABCDEFGHIJKLM".split("");
+
+  // Seat groups represent the layout in the reference image.
+  // Empty spaces between groups are aisles.
+  const layout = {
+    A: [0, 0, 6, 0, 4],
+    B: [4, 0, 6, 0, 4],
+    C: [4, 0, 6, 0, 4],
+    D: [4, 0, 6, 0, 4],
+    E: [4, 0, 6, 0, 4],
+    F: [4, 0, 6, 0, 4],
+    G: [4, 0, 6, 0, 4],
+    H: [4, 0, 6, 0, 4],
+    I: [4, 0, 6, 0, 4],
+    J: [4, 0, 6, 0, 4],
+    K: [7, 0, 6, 0, 7],
+    L: [7, 0, 6, 0, 7],
+    M: [9, 0, 8, 0, 9]
+  };
+
+  const gray = {
+    H: [5,6,7,8,9,10],
+    J: [5,6,7,8,9,10],
+    K: [10,11],
+    L: [11,12,13]
+  };
+
+  rows.forEach(function(row) {
+    const line = document.createElement("div");
+    line.style.cssText =
+      "display:flex;align-items:center;justify-content:center;" +
+      "gap:3px;margin-bottom:5px;";
+
+    const label = document.createElement("div");
+    label.textContent = row;
+    label.style.cssText =
+      "width:19px;flex-shrink:0;text-align:center;" +
+      "font-size:12px;background:#535865;border-radius:2px;";
+    line.appendChild(label);
+
+    const groups = layout[row];
+    let seatNo = 0;
+
+    groups.forEach(function(count, groupIndex) {
+      if (groupIndex === 1 || groupIndex === 3) {
+        const aisle = document.createElement("div");
+        aisle.style.cssText = "width:24px;flex-shrink:0;";
+        line.appendChild(aisle);
+        return;
+      }
+
+      const group = document.createElement("div");
+      group.style.cssText = "display:flex;gap:3px;";
+
+      for (let i = 0; i < count; i++) {
+        seatNo++;
+        const seat = document.createElement("span");
+        const isGray = (gray[row] || []).includes(seatNo);
+        seat.title = "Seat " + row + seatNo;
+        seat.setAttribute("aria-label", "Seat " + row + seatNo);
+        seat.style.cssText =
+          "display:inline-block;width:15px;height:17px;" +
+          "border-radius:4px 4px 2px 2px;" +
+          "background:" + (isGray ? "#444852" : "#db7139") + ";";
+        group.appendChild(seat);
+      }
+      line.appendChild(group);
+    });
+
+    root.appendChild(line);
+  });
+})();
+</script>
